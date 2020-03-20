@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as etree
 import sys
 
-action_list = {"give" : '1', "take" : '2', "background": '3', "xfr-from" : '-1', "xfr-to" : '-1'}
+action_list = {"give" : '1', "take" : '2', "background": '3', "xfr-from" : '-1', "xfr-to" : '-1', "3d-xfr-to" : '-1', "3d-xfr-from" : '-1'}
 
 cvat_file = sys.argv[1]
 tree = etree.parse(cvat_file)
@@ -15,7 +15,7 @@ video_data = root[1][0][1].text
 
 # TODO: CHECK FRAME RATE:
 # ffmpeg -i ./original-data/cam20-p2p-1.mp4 2>&1 | sed -n "s/.*, \(.*\) fp.*/\1/p"
-FRAME_RATE = 29.9
+FRAME_RATE = 30 # 29.9
 
 for index, entry in enumerate(root):
     if entry.tag != 'track':
@@ -31,7 +31,12 @@ for index, entry in enumerate(root):
         elif i in [1, 3]:
             bb[i] = "%.3f" % (float(bb[i]) / float(height))
 
-    second = str(int((float(frame) * 10) / FRAME_RATE))
-    line = [video_data,second,bb[0],bb[1],bb[2],bb[3],action_list[action], person_id]
+    second = str(int((float(frame) * 10) / FRAME_RATE) + 1)
+
+    if action in action_list.keys():
+        line = [video_data,second,bb[0],bb[1],bb[2],bb[3],action_list[action], person_id]
+    else:
+        line = [video_data,second,bb[0],bb[1],bb[2],bb[3],'-1', person_id]
+
     print(",".join(line))
 
