@@ -26,7 +26,7 @@ def get_frames(filename, second, targetDir):
     # outdir_folder = os.path.join(outdir_keyframes, video_id)
     # mkdir_p(outdir_folder)
     # outpath = os.path.join(outdir_folder, '%d.jpg' % (int(time_id)))
-    targetDir = targetDir + "/%02d.png"
+    targetDir = targetDir + "/%02d.jpg"
     ffmpeg_command = 'ffmpeg -i %(videopath)s -vf "select=not(mod(n\,1))" -q:v 2 %(outpath)s'  % {
                           'videopath': filename,
                           'outpath': targetDir}
@@ -52,6 +52,8 @@ videoDir = rootDir + "/original-data"
 saveDir = rootDir + "/dataset"
 chunkStagingDir = rootDir + "/temp"
 
+str_padding = 5
+
 dataset_file = sys.argv[1].replace("./", '')
 dataset = open(dataset_file, 'r').readlines()
 
@@ -66,12 +68,12 @@ for line in dataset:
 
     # Snip video
     for second in range(0, video_length + 1):
-        if not os.path.exists(saveDir + "/" + video.replace('.mp4', '') + "/" + str(second).zfill(4)):
-            os.mkdir(saveDir + "/" + video.replace('.mp4', '') + "/" + str(second).zfill(4))
+        if not os.path.exists(saveDir + "/" + video.replace('.mp4', '') + "/" + str(second).zfill(str_padding)):
+            os.mkdir(saveDir + "/" + video.replace('.mp4', '') + "/" + str(second).zfill(str_padding))
         else:
             continue
-        outDir = saveDir + "/" + video.replace('.mp4', '') + "/" + str(second).zfill(4)
-        tempDir = chunkStagingDir + "/" + str(second).zfill(4) + "_" + video
+        outDir = saveDir + "/" + video.replace('.mp4', '') + "/" + str(second).zfill(str_padding)
+        tempDir = chunkStagingDir + "/" + str(second).zfill(str_padding) + "_" + video
         get_chunk(videoDir + "/" + video, second, tempDir)
         get_frames(tempDir, second, outDir)
 

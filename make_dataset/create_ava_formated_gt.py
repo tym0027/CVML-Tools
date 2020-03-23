@@ -21,7 +21,7 @@ for index, entry in enumerate(root):
     if entry.tag != 'track':
         continue
   
-    person_id = 'X'
+    person_id = '0'
     action = root[index].attrib['label']
     frame = root[index][0].attrib['frame']
     bb = [root[index][0].attrib['xtl'], root[index][0].attrib['ytl'], root[index][0].attrib['xbr'], root[index][0].attrib['ybr']]
@@ -31,7 +31,7 @@ for index, entry in enumerate(root):
         elif i in [1, 3]:
             bb[i] = "%.3f" % (float(bb[i]) / float(height))
 
-    second = str(int((float(frame) * 10) / FRAME_RATE) + 1)
+    second = str(int((float(frame) * 10) / FRAME_RATE) + 1).zfill(5)
 
     if action in action_list.keys():
         line = [video_data,second,bb[0],bb[1],bb[2],bb[3],action_list[action], person_id]
