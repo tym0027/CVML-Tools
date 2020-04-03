@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as etree
 import sys
 
-action_list = {"give" : '1', "take" : '2', "background": '3', "xfr-from" : '-1', "xfr-to" : '-1', "3d-xfr-to" : '-1', "3d-xfr-from" : '-1'}
+action_list = {"give" : '1', "take" : '1', "background": '3', "xfr-from" : '2', "xfr-to" : '2', "3d-xfr-to" : '2', "3d-xfr-from" : '2'}
 
 cvat_file = sys.argv[1]
 tree = etree.parse(cvat_file)
