@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<annotations>
+  <version>1.1</version>
+  <meta>
+    <task>
+      <id>25</id>
+      <name>20200504-test</name>
+      <size>1201</size>
+      <mode>interpolation</mode>
+      <overlap>5</overlap>
+      <bugtracker></bugtracker>
+      <created>2020-05-03 19:18:18.970579+00:00</created>
+      <updated>2020-05-03 19:24:49.082264+00:00</updated>
+      <start_frame>0</start_frame>
+      <stop_frame>1200</stop_frame>
+      <frame_filter></frame_filter>
+      <z_order>False</z_order>
+      <labels>
+        <label>
+          <name>give</name>
+          <attributes>
+          </attributes>
+        </label>
+        <label>
+          <name>take</name>
+          <attributes>
+          </attributes>
+        </label>
+      </labels>
+      <segments>
+        <segment>
+          <id>23</id>
+          <start>0</start>
+          <stop>1200</stop>
+          <url>http://localhost:8080/?id=23</url>
+        </segment>
+      </segments>
+      <owner>
+        <username>tym0027</username>
+        <email>rupprecht.t@husky.neu.edu</email>
+      </owner>
+      <assignee></assignee>
+      <original_size>
+        <width>480</width>
+        <height>270</height>
+      </original_size>
+    </task>
+    <dumped>2020-05-03 19:24:53.379544+00:00</dumped>
+    <source>sampled_20191024-test-cam20exp1.mp4</source>
+  </meta>
+  <track id="0" label="take">
+    <box frame="558" outside="0" occluded="0" keyframe="1" xtl="393.87" ytl="10.32" xbr="447.16" ybr="98.20">
+    </box>
+    <box frame="559" outside="1" occluded="0" keyframe="1" xtl="393.87" ytl="10.32" xbr="447.16" ybr="98.20">
+    </box>
+  </track>
+  <track id="1" label="give">
+    <box frame="558" outside="0" occluded="0" keyframe="1" xtl="351.43" ytl="0.00" xbr="422.98" ybr="85.87">
+    </box>
+    <box frame="559" outside="1" occluded="0" keyframe="1" xtl="351.43" ytl="0.00" xbr="422.98" ybr="85.87">
+    </box>
+  </track>
+</annotations>

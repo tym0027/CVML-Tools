@@ -2,9 +2,9 @@ import os
 import sys
 import subprocess
 
-rootDir = "/data/truppr/ava_v2_1/flipped_frames/"
-saveDir = "/data/truppr/ava_v2_1/numpy_files/flip-flows/"
-fileList = "/data/truppr/ava_v2_1/total_files1.txt"
+rootDir = "/data/truppr/ava/frames/" # "/data/truppr/ava_v2_1/flipped_frames/"
+saveDir = "/data/truppr/ava/flows/" # "/data/truppr/ava_v2_1/numpy_files/flip-flows/"
+fileList = sys.argv[1] # "/data/CLASP-DATA/DATASET-TRAINVAL-FILES/20200330/clasp_20200330_experiment.csv" # "/data/truppr/ava_v2_1/total_files1.txt"
 
 dirs = open(fileList, 'r').readlines()
 
@@ -14,12 +14,13 @@ for dir in dirs:
     targetDirRootArr.append(rootDir + "/" + dir.split(",")[0] + "/" +  str(dir.split(",")[1]).zfill(5) + "/")
     targetDirRootArr.append(rootDir + "/" + dir.split(",")[0] + "/" +  str(int(dir.split(",")[1]) - 1).zfill(5) + "/")
     targetDirRootArr.append(rootDir + "/" + dir.split(",")[0] + "/" +  str(int(dir.split(",")[1]) + 1).zfill(5) + "/")
-
+    targetDirRootArr.append(rootDir + "/" + dir.split(",")[0] + "/" +  str(int(dir.split(",")[1]) - 2).zfill(5) + "/")
 
     targetDirSaveArr = []
     targetDirSaveArr.append(saveDir + "/" + dir.split(",")[0] + "/" +  str(dir.split(",")[1]).zfill(5) + "/")
     targetDirSaveArr.append(saveDir + "/" + dir.split(",")[0] + "/" +  str(int(dir.split(",")[1]) - 1).zfill(5) + "/")
     targetDirSaveArr.append(saveDir + "/" + dir.split(",")[0] + "/" +  str(int(dir.split(",")[1]) + 1).zfill(5) + "/")
+    targetDirSaveArr.append(saveDir + "/" + dir.split(",")[0] + "/" +  str(int(dir.split(",")[1]) - 2).zfill(5) + "/")
 
     index = 0
     for targetDirRoot in targetDirRootArr:
