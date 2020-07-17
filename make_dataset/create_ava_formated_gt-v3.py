@@ -1,7 +1,27 @@
 import xml.etree.ElementTree as etree
-import sys
+# import sys
+import os
 import json
 import numpy as np
+import argparse
+
+parser = argparse.ArgumentParser(description='Create AVA formatted groundtruth for STEP Network')
+parser.add_argument('--cvat_file', type=str, default=None, help='path to cvat file...')
+parser.add_argument('--json_file', type=str, default=None, help='path to json object file...')
+parser.add_argument('--csv_file', type=str, default=None, help='path to csv file')
+args = parser.parse_args()
+
+
+def write_csv(line):
+    if os.path.exists(args.csv_file):
+        f = open(args.csv_file, 'a')    
+    else:
+        f = open(args.csv_file, 'w')
+
+    f.write(line + "\n")
+    f.close()
+
+
 
 # The niave way of computing bounding boxes...s
 def niave(a, b):
@@ -64,14 +84,21 @@ action_list = {"xfr-from" : '2',
 
 object_list = ["give", "take", "human", "bin"]
 
-object_file = "./" 
+# object_file = "./" 
 
-cvat_file = sys.argv[1]
-
-object_file += cvat_file.replace(".xml", "-objects.json")
-
+cvat_file = args.cvat_file
 tree = etree.parse(cvat_file)
 root = tree.getroot()
+
+# object_file += cvat_file.replace(".xml", "-objects.json")
+
+if os.path.exists(args.json_file):
+    with open(args.json_file) as json_file:
+        object_file = json.load(json_file)
+    # object_file = 
+else:
+    object_file = {}
+
 
 # wONG7Vh87B4,1555,0.142,0.024,0.408,0.978,2,404
 
@@ -121,14 +148,15 @@ for index, entry in enumerate(root):
             line = [video_data,second,bb[0],bb[1],bb[2],bb[3],'-1', person_id]
 
         print(",".join(line))
-        
+       
+        write_csv(",".join(line))
+
         try:
             acts[frame.zfill(5)][str(bb)]
             input("found duplicate act key...")
         except KeyError:
             acts[frame.zfill(5)][str(bb)] = action_list[action]
 
-object_file = {}
 for entry in sorted(acts.keys()):
     if entry not in obs.keys():
         continue
@@ -197,6 +225,8 @@ for entry in sorted(acts.keys()):
 
             line = [video_data, entry, min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3]),'1', '0']
             print(",".join(line))
+            
+            write_csv(",".join(line)) 
 
             # input("ALERT: Found P2P")
             
@@ -251,5 +281,9 @@ for entry in sorted(acts.keys()):
             object_file[act_BB]["human"] = human[0]
             object_file[act_BB]["bin"] = bin[0]
 '''
-print(object_file)
-print(len(object_file.keys()))
+
+with open(args.json_file, 'w') as outfile:
+    json.dump(object_file, outfile)
+
+# print(object_file)
+# print(len(object_file.keys()))
