@@ -4,6 +4,7 @@ import os
 import json
 import numpy as np
 import argparse
+import uuid
 
 parser = argparse.ArgumentParser(description='Create AVA formatted groundtruth for STEP Network')
 parser.add_argument('--cvat_file', type=str, default=None, help='path to cvat file...')
@@ -11,6 +12,7 @@ parser.add_argument('--json_file', type=str, default=None, help='path to json ob
 parser.add_argument('--csv_file', type=str, default=None, help='path to csv file')
 args = parser.parse_args()
 
+recall = {}
 
 def write_csv(line):
     if os.path.exists(args.csv_file):
@@ -134,28 +136,35 @@ for index, entry in enumerate(root):
             bb[i] = "%.3f" % (float(bb[i]) / float(height))
 
     second = str(int((float(frame) * 10) / FRAME_RATE) + 1).zfill(5)
+    id = uuid.uuid1()
 
     if action in object_list:
         try:
+            # obs[frame.zfill(5)][id.hex]
             obs[frame.zfill(5)][str(bb)]
+            recall[id.hex]
             input("found duplicate obj key...")
         except KeyError:
             obs[frame.zfill(5)][str(bb)] = action
+            recall[id.hex] = bb
     else:
         if action in action_list.keys():
-            line = [video_data,second,bb[0],bb[1],bb[2],bb[3],action_list[action], person_id]
+            line = [video_data,second,bb[0],bb[1],bb[2],bb[3],action_list[action], person_id,id.hex]
         else:
-            line = [video_data,second,bb[0],bb[1],bb[2],bb[3],'-1', person_id]
+            line = [video_data,second,bb[0],bb[1],bb[2],bb[3],'-1', person_id,id.hex]
 
         print(",".join(line))
        
         write_csv(",".join(line))
 
         try:
-            acts[frame.zfill(5)][str(bb)]
+            # acts[frame.zfill(5)][str(bb)]
+            acts[frame.zfill(5)][id.hex]
+            recall[id.hex]
             input("found duplicate act key...")
         except KeyError:
-            acts[frame.zfill(5)][str(bb)] = action_list[action]
+            acts[frame.zfill(5)][id.hex] = action_list[action]
+            recall[id.hex] = bb
 
 for entry in sorted(acts.keys()):
     if entry not in obs.keys():
@@ -172,7 +181,7 @@ for entry in sorted(acts.keys()):
             for o in obs[entry]:
                 # print(obs[entry][o])
                 # print(niave(act, o))
-                iou = niave(act, o)
+                iou = niave(str(recall[act]), o)
                 #if iou > .1 and (obs[entry][o] == "give" or obs[entry][o] == "take"):
                 #    input("ALERT Found give take stuff")
                 if iou > .1 and obs[entry][o] == "bin":
@@ -211,9 +220,9 @@ for entry in sorted(acts.keys()):
             elif obs[entry][o] == "take" and taker == '':
                 taker = o
             else:
-                pass
+                # pass
                 # print(obs[entry])
-                # input("ALERT: Found some bullshit")
+                input("ALERT: Found some bullshit")
         
         if giver != '' and taker  != '':
             # print(giver, taker)
@@ -223,7 +232,9 @@ for entry in sorted(acts.keys()):
             # print(g, t)
             # print(min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3]))
 
-            line = [video_data, entry, min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3]),'1', '0']
+            id = uuid.uuid1()
+            print(";)",giver,taker)
+            line = [video_data, entry, min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3]),'1', '0',id.hex]
             print(",".join(line))
             
             write_csv(",".join(line)) 
@@ -233,7 +244,9 @@ for entry in sorted(acts.keys()):
             # print([min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3])])
             # input("ALERT: Found P2P")
 
-            object_file[str([min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3])])] = {"give" : g, "take" : t}
+            # object_file[str([min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3])])] = {"give" : g, "take" : t}
+            object_file[id.hex] = {"give" : g, "take" : t}
+            # recall[id.hex] = [min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3])]
     else:
         # print(obs[entry])
         pass # input("ALERT: EDGE CASE")
