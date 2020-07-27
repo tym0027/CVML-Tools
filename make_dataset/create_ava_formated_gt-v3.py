@@ -148,7 +148,9 @@ for index, entry in enumerate(root):
             obs[frame.zfill(5)][str(bb)] = action
             recall[id.hex] = bb
     else:
-        if action in action_list.keys():
+        if action == "background":
+            line = [video_data,second,bb[0],bb[1],bb[2],bb[3],action_list[action], person_id,'NA']
+        elif action in action_list.keys():
             line = [video_data,second,bb[0],bb[1],bb[2],bb[3],action_list[action], person_id,id.hex]
         else:
             line = [video_data,second,bb[0],bb[1],bb[2],bb[3],'-1', person_id,id.hex]
@@ -233,8 +235,11 @@ for entry in sorted(acts.keys()):
             # print(min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3]))
 
             id = uuid.uuid1()
-            print(";)",giver,taker)
-            line = [video_data, entry, min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3]),'1', '0',id.hex]
+            # print(";)",giver,taker)
+
+            second = str(int((float(entry) * 10) / FRAME_RATE) + 1).zfill(5) 
+            
+            line = [video_data, second, min(g[0], t[0]), min(g[1], t[1]), max(g[2], t[2]), max(g[3], t[3]),'1', '0',id.hex]
             print(",".join(line))
             
             write_csv(",".join(line)) 
